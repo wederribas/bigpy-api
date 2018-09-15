@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bigpy',
 ]
 
 MIDDLEWARE = [
@@ -72,11 +73,15 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
+DATABASE_URI = "bigpy-azwev.mongodb.net/bigpy?retryWrites=true"
+DATABASE_USER = os.environ.get("BIGPY_DB_USER", "")
+DATABASE_PASSWORD = os.environ.get("BIGPY_DB_PASSWORD", "")
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': False,
+        'NAME': 'bigpy',
+        'HOST': f'mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_URI}',
     }
 }
 
