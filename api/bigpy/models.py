@@ -12,6 +12,9 @@ class CustomerReports(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=2)
 
+    def __str__(self):
+        return self.company_name
+
 
 class CompanyReports(models.Model):
     _id = models.ObjectIdField()
@@ -27,3 +30,6 @@ class CompanyReports(models.Model):
     problem_reported = models.TextField()
     company_replied = models.BooleanField()
     customer_rating = models.IntegerField()
+
+    def __str__(self):
+        return self.company_name
