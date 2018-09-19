@@ -24,7 +24,7 @@ class CompanyReports(models.Model):
     gender = models.CharField(max_length=1)
     age_range = models.IntegerField()
     conclusion_date = models.FloatField()
-    days_to_reply = models.IntegerField()
+    days_to_reply = models.IntegerField(null=True)
     company_name = models.TextField()
     market_segment = models.TextField()
     problem_reported = models.TextField()
