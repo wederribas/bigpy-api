@@ -8,7 +8,7 @@ class CustomerReports(models.Model):
     company_response = models.TextField()
     user_feedback = models.TextField()
     user_rating = models.IntegerField()
-    date = models.BigIntegerField()
+    date = models.FloatField()
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=2)
 
@@ -23,7 +23,7 @@ class CompanyReports(models.Model):
     city = models.TextField()
     gender = models.CharField(max_length=1)
     age_range = models.IntegerField()
-    conclusion_date = models.BigIntegerField()
+    conclusion_date = models.FloatField()
     days_to_reply = models.IntegerField()
     company_name = models.TextField()
     market_segment = models.TextField()
