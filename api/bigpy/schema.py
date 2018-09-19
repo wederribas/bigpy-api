@@ -1,16 +1,24 @@
 import graphene
+import django_filters
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
 
 from .models import CustomerReports
+
+
+class CustomerReportsFilter(django_filters.FilterSet):
+    class Meta:
+        model = CustomerReports
+        fields = ['company_name', 'user_rating', 'date', 'city', 'state']
 
 
 class CustomerReportsType(DjangoObjectType):
     class Meta:
         model = CustomerReports
+        interfaces = (graphene.relay.Node, )
 
 
 class Query(graphene.ObjectType):
-    all_customer_reports = graphene.List(CustomerReportsType)
-
-    def resolve_all_customer_reports(self, info, **kwargs):
-        return CustomerReports.objects.all()
+    customer_report = graphene.relay.Node.Field(CustomerReportsType)
+    all_customer_reports = DjangoFilterConnectionField(
+        CustomerReportsType, filterset_class=CustomerReportsFilter)
