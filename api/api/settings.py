@@ -74,7 +74,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-DATABASE_URI = "bigpy-azwev.mongodb.net/bigpy?retryWrites=true"
+DATABASE_URI = os.environ.get("BIGPY_DB_URI", "")
 DATABASE_USER = os.environ.get("BIGPY_DB_USER", "")
 DATABASE_PASSWORD = os.environ.get("BIGPY_DB_PASSWORD", "")
 DATABASES = {
