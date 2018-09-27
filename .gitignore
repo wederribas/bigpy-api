@@ -9,3 +9,9 @@ db.sqlite3
 
 # Local vscode settings
 .vscode/
+
+# Pytest files
+.pytest_cache/
+
+# Ignore migration files for bigpyapp as the MongoDB server does not need it
+migrations/
