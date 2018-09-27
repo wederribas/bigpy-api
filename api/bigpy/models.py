@@ -29,7 +29,7 @@ class CompanyReports(models.Model):
     market_segment = models.TextField()
     problem_reported = models.TextField()
     company_replied = models.BooleanField()
-    customer_rating = models.IntegerField()
+    customer_rating = models.IntegerField(null=True)
 
     def __str__(self):
         return self.company_name
