@@ -3,7 +3,7 @@ import django_filters
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
-from .models import CustomerReports, CompanyReports
+from .models import CustomerReports, CompanyReports, CompaniesNames
 
 
 class CustomerReportsFilter(django_filters.FilterSet):
@@ -31,6 +31,18 @@ class CompanyReportsType(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
 
+class CompaniesNamesFilter(django_filters.FilterSet):
+    class Meta:
+        model = CompaniesNames
+        fields = ['_id']
+
+
+class CompaniesNamesType(DjangoObjectType):
+    class Meta:
+        model = CompaniesNames
+        interfaces = (graphene.relay.Node, )
+
+
 class Query(graphene.ObjectType):
     customer_report = graphene.relay.Node.Field(CustomerReportsType)
     all_customer_reports = DjangoFilterConnectionField(
@@ -39,3 +51,6 @@ class Query(graphene.ObjectType):
     company_report = graphene.relay.Node.Field(CompanyReportsType)
     all_company_reports = DjangoFilterConnectionField(
         CompanyReportsType, filterset_class=CompanyReportsFilter)
+
+    all_companies_names = DjangoFilterConnectionField(
+        CompaniesNamesType, filterset_class=CompaniesNamesFilter)

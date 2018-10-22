@@ -33,3 +33,13 @@ class CompanyReports(models.Model):
 
     def __str__(self):
         return self.company_name
+
+
+class CompaniesNames(models.Model):
+    _id = models.TextField()
+    count = models.IntegerField()
+
+    objects = models.DjongoManager()
+
+    def __str__(self):
+        return self._id
