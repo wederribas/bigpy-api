@@ -31,15 +31,7 @@ class CompanyReports(models.Model):
     company_replied = models.BooleanField()
     customer_rating = models.IntegerField(null=True)
 
-    def __str__(self):
-        return self.company_name
-
-
-class CompaniesNames(models.Model):
-    _id = models.TextField()
-    count = models.IntegerField()
-
     objects = models.DjongoManager()
 
     def __str__(self):
-        return self._id
+        return self.company_name

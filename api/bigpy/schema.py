@@ -3,7 +3,7 @@ import django_filters
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
-from .models import CustomerReports, CompanyReports, CompaniesNames
+from .models import CustomerReports, CompanyReports
 
 
 class CustomerReportsFilter(django_filters.FilterSet):
@@ -31,18 +31,6 @@ class CompanyReportsType(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
 
-class CompaniesNamesFilter(django_filters.FilterSet):
-    class Meta:
-        model = CompaniesNames
-        fields = ['_id']
-
-
-class CompaniesNamesType(DjangoObjectType):
-    class Meta:
-        model = CompaniesNames
-        interfaces = (graphene.relay.Node, )
-
-
 class Query(graphene.ObjectType):
     customer_report = graphene.relay.Node.Field(CustomerReportsType)
     all_customer_reports = DjangoFilterConnectionField(
@@ -52,5 +40,7 @@ class Query(graphene.ObjectType):
     all_company_reports = DjangoFilterConnectionField(
         CompanyReportsType, filterset_class=CompanyReportsFilter)
 
-    all_companies_names = DjangoFilterConnectionField(
-        CompaniesNamesType, filterset_class=CompaniesNamesFilter)
+    companies_names = graphene.List(graphene.String)
+
+    def resolve_companies_names(self, info, **kwargs):
+        return CompanyReports.objects.mongo_distinct('company_name')
