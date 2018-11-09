@@ -5,6 +5,7 @@ from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from .models import CustomerReports, CompanyReports
+from .utils import parse_results_as_graphe_object
 
 
 class CustomerReportsFilter(django_filters.FilterSet):
@@ -32,8 +33,13 @@ class CompanyReportsType(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
 
-class Result(graphene.ObjectType):
+class CompanyReportsPerDate(graphene.ObjectType):
     year = graphene.String()
+    count = graphene.String()
+
+
+class CompanyReportsCount(graphene.ObjectType):
+    company_name = graphene.String()
     count = graphene.String()
 
 
@@ -50,7 +56,10 @@ class Query(graphene.ObjectType):
     total_company_reports = graphene.Int(company_name=graphene.String())
     total_company_replies = graphene.Int(company_name=graphene.String())
     overall_company_rating = graphene.Float(company_name=graphene.String())
-    reports_per_date = graphene.List(Result, company_name=graphene.String())
+    reports_per_date = graphene.List(
+        CompanyReportsPerDate,
+        company_name=graphene.String())
+    companies_reports_count = graphene.List(CompanyReportsCount)
 
     def resolve_companies_names(self, info, **kwargs):
         return CompanyReports.objects.mongo_distinct('company_name')
@@ -96,20 +105,32 @@ class Query(graphene.ObjectType):
                     },
                     'count': {'$sum': 1}
                 }
-            }
+            },
+            {'$sort': {'year': -1}}
         ])]
 
-        results_as_obj_list = []
+        return parse_results_as_graphe_object(
+            results,
+            'year',
+            CompanyReportsPerDate
+        )
 
-        for odict in results:
-            for key, value in odict.items():
-                if key == '_id':
-                    year = value["year"]
+    def resolve_companies_reports_count(self, info, **kwargs):
+        results = [i for i in CompanyReports.objects.mongo_aggregate([
+            {
+                '$group': {
+                    '_id': {
+                        'company_name': '$company_name'
+                    },
+                    'count': {'$sum': 1}
+                }
+            },
+            {'$sort': {'count': -1}},
+            {'$limit': 10}
+        ])]
 
-                if key == 'count':
-                    count = value
-
-            result = Result(year, count)
-            results_as_obj_list.append(result)
-
-        return results_as_obj_list
+        return parse_results_as_graphe_object(
+            results,
+            'company_name',
+            CompanyReportsCount
+        )
