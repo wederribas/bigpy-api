@@ -34,7 +34,6 @@ class CompanyReportsType(DjangoObjectType):
 
 class Result(graphene.ObjectType):
     year = graphene.String()
-    month = graphene.String()
     count = graphene.String()
 
 
@@ -93,7 +92,6 @@ class Query(graphene.ObjectType):
             {
                 '$group': {
                     '_id': {
-                        'month': {'$month': '$conclusion_date'},
                         'year': {'$year': '$conclusion_date'}
                     },
                     'count': {'$sum': 1}
@@ -106,13 +104,12 @@ class Query(graphene.ObjectType):
         for odict in results:
             for key, value in odict.items():
                 if key == '_id':
-                    month = value["month"]
                     year = value["year"]
 
                 if key == 'count':
                     count = value
 
-            result = Result(year, month, count)
+            result = Result(year, count)
             results_as_obj_list.append(result)
 
         return results_as_obj_list
